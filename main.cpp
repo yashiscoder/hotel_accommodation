@@ -13,8 +13,14 @@ const char* DB = "mydb";
 
 class Hostel{
     private:
-    string name;
-    int bed, fees;
+    string Name;
+    int Bed, Fees;
+    public:
+    Hostel(string name, int bed, int fees){
+        Name = name;
+        Bed = bed;
+        Fees = fees;
+    }
 }
 int main(){
     MYSQL* conn;
