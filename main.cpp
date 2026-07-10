@@ -6,6 +6,10 @@
 
 using namespace std;
 
+const char* HOST = "localhost";
+const char* USER ="root";
+const char* PW =" ";
+const char* DB = "mydb";
 int main(){
 
     return 0;
