@@ -1,105 +1,189 @@
-#include<iostream>
-#include<mysql.h>
-#include<mysqld_error.h>
-#include<windows.h>
-#include<sstream>
+#include <iostream>
+#include <mysql.h>
+#include <windows.h>
+#include <sstream>
+
 using namespace std;
 
+// Database Credentials
 const char* HOST = "localhost";
-const char* USER ="root";
-const char* PW =" ";
-const char* DB = "mydb";
+const char* USER = "root";
+const char* PW   = "";          // Enter your MySQL password here
+const char* DB   = "mydb";
 
-class Hostel{
-    private:
+// Hostel Class
+class Hostel
+{
+private:
     string Name;
-    int Bed, Fees;
-    public:
-    Hostel(string name, int bed, int fees){
+    int Bed;
+    int Fees;
+
+public:
+    Hostel(string name, int bed, int fees)
+    {
         Name = name;
         Bed = bed;
         Fees = fees;
     }
-    string getName(){
+
+    string getName()
+    {
         return Name;
     }
-    int getBed(){
+
+    int getBed()
+    {
         return Bed;
     }
-    int getFees(){
+
+    int getFees()
+    {
         return Fees;
     }
-}
-int main(){
+};
+
+int main()
+{
     MYSQL* conn;
+
     conn = mysql_init(NULL);
-    if (!mysql_real_connect(conn, HOST, USER, PW, DB, 3306, NULL, 0)){
-        cout<<"Error: "<<mysql_error(conn)<<endl;
-    }
-    else{
-        cout<<"Connection success."<<endl;
-    }
-    Sleep(3000)
 
-    Hotel h("Project Hostel", 10, 10000);
-
-    int intB = h.getBed();
-    stringstream ss;
-    ss<<intB;
-    string strB = ss.str();
-
-    int intF = h.getFees();
-    stringstream as;
-    as<<intF;
-    string strf = as.str();
-    string insert = "INSERT INTO hostel (Name, Bed, Fees) VALUES ('"+h.getName()+"', '"+strB+"','"+strF"')";
-    if(mysql_query(conn, insert.c_str())){
-        cout<<"Error: "<<mysql_error(conn)<<endl;
-    }
-    else{
-        cout<<"Data Inserted"<<endl;
+    if (!mysql_real_connect(conn, HOST, USER, PW, DB, 3306, NULL, 0))
+    {
+        cout << "Connection Failed!" << endl;
+        cout << "Error : " << mysql_error(conn) << endl;
+        return 1;
     }
 
-    bool exit = false;
+    cout << "Database Connected Successfully!" << endl;
 
-    while(!exit){
+    Sleep(2000);
+
+    Hostel h("Project Hostel", 10, 10000);
+
+    string strBed = to_string(h.getBed());
+    string strFees = to_string(h.getFees());
+
+    // Insert Hostel Record
+    string insert =
+        "INSERT INTO hostel(Name, Bed, Fees) VALUES('" +
+        h.getName() + "', '" +
+        strBed + "', '" +
+        strFees + "')";
+
+    if (mysql_query(conn, insert.c_str()))
+    {
+        cout << "Insert Error : " << mysql_error(conn) << endl;
+    }
+    else
+    {
+        cout << "Hostel Added Successfully." << endl;
+    }
+
+    Sleep(2000);
+
+    bool Exit = false;
+
+    while (!Exit)
+    {
         system("cls");
-        cout<<"Welcome to Project Hostel Management"<<endl;
-        cout<<" "<<endl;
-        cout<<"1. Reserve Bed: "<<end;
-        cout<<"2. Exit: "<<endl;
-        cout<<"Enter Your Choice: ";
-        int val;
-        cin>>val;
 
-        if(val==1){
-            string n;
-            cout<<"Enter Student name: ";
-            cin>>n;
-            int total;
-            string check = "SELECT Bed FROM hostel Name = '"h.getName()"'";
-            if(mysql_query(conn, check.c_str())){
-                cout<<"Error: "<<mysql_error(conn)<<endl;
+        cout << "=====================================" << endl;
+        cout << "   PROJECT HOSTEL MANAGEMENT SYSTEM" << endl;
+        cout << "=====================================" << endl;
+
+        cout << "1. Reserve Bed" << endl;
+        cout << "2. Exit" << endl;
+
+        cout << "\nEnter Choice : ";
+
+        int choice;
+        cin >> choice;
+
+        if (choice == 1)
+        {
+            string student;
+
+            cout << "\nEnter Student Name : ";
+            cin.ignore();
+            getline(cin, student);
+
+            int totalBed = 0;
+
+            string check =
+                "SELECT Bed FROM hostel WHERE Name='" +
+                h.getName() + "'";
+
+            if (mysql_query(conn, check.c_str()))
+            {
+                cout << mysql_error(conn) << endl;
+                Sleep(3000);
+                continue;
             }
-            else{
-                MYSQL_RES* res;
-                res = mysql_store_reslut(conn);
-                if (res){
-                    MYSQL_ROW row = mysql_fetch_row(res);
-                    if(row){
-                        total = atoi(row[0]);
-                    }
+
+            MYSQL_RES* res = mysql_store_result(conn);
+
+            if (res != NULL)
+            {
+                MYSQL_ROW row = mysql_fetch_row(res);
+
+                if (row != NULL)
+                {
+                    totalBed = atoi(row[0]);
+                }
+
+                mysql_free_result(res);
+            }
+
+            if (totalBed > 0)
+            {
+                totalBed--;
+
+                string strTotal = to_string(totalBed);
+
+                string update =
+                    "UPDATE hostel SET Bed='" +
+                    strTotal +
+                    "' WHERE Name='" +
+                    h.getName() + "'";
+
+                if (mysql_query(conn, update.c_str()))
+                {
+                    cout << mysql_error(conn) << endl;
+                }
+                else
+                {
+                    cout << "\nBed Reserved Successfully!" << endl;
+                    cout << "Student : " << student << endl;
+                    cout << "Hostel  : " << h.getName() << endl;
+                    cout << "Fees    : Rs. " << h.getFees() << endl;
+                    cout << "Beds Left : " << totalBed << endl;
                 }
             }
-            if(total > 0){
-                total--;
-                stringstream zs;
-                zs<<total;
-                string strT = zs.str();
-
-                string update = "UPDATE hostel SET BED = '"+strT+"', WHERE Name ='"+h.getName()+"'";
+            else
+            {
+                cout << "\nSorry! No Beds Available." << endl;
             }
+
+            Sleep(4000);
+        }
+
+        else if (choice == 2)
+        {
+            Exit = true;
+            cout << "\nThank You!" << endl;
+            Sleep(2000);
+        }
+
+        else
+        {
+            cout << "\nInvalid Choice!" << endl;
+            Sleep(2000);
         }
     }
+
+    mysql_close(conn);
+
     return 0;
 }
