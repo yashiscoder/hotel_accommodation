@@ -76,7 +76,7 @@ int main(){
             string n;
             cout<<"Enter Student name: ";
             cin>>n;
-
+            int total;
             string check = "SELECT Bed FROM hostel Name = '"h.getName()"'";
             if(mysql_query(conn, check.c_str())){
                 cout<<"Error: "<<mysql_error(conn)<<endl;
@@ -86,8 +86,18 @@ int main(){
                 res = mysql_store_reslut(conn);
                 if (res){
                     MYSQL_ROW row = mysql_fetch_row(res);
-                    if
+                    if(row){
+                        total = atoi(row[0]);
+                    }
                 }
+            }
+            if(total > 0){
+                total--;
+                stringstream zs;
+                zs<<total;
+                string strT = zs.str();
+
+                string update = "UPDATE hostel SET BED = '"+strT+"', WHERE Name ='"+h.getName()+"'";
             }
         }
     }
