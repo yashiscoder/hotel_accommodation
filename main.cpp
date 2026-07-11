@@ -59,5 +59,17 @@ int main(){
     else{
         cout<<"Data Inserted"<<endl;
     }
+
+    bool exit = false;
+    while(!exit){
+        system("cls");
+        cout<<"Welcome to Project Hostel Management"<<endl;
+        cout<<" "<<endl;
+        cout<<"1. Reserve Bed: "<<end;
+        cout<<"2. Exit: "<<endl;
+        cout<<"Enter Your Choice: ";
+        int val;
+        cin>>val;
+    }
     return 0;
 }
