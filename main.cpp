@@ -4,7 +4,7 @@
 #include<windows.h>
 #include<sstream>
 using namespace std;
-jnsdsjn
+
 const char* HOST = "localhost";
 const char* USER ="root";
 const char* PW =" ";
@@ -20,6 +20,15 @@ class Hostel{
         Bed = bed;
         Fees = fees;
     }
+    string getName(){
+        return Name;
+    }
+    int getBed(){
+        return Bed;
+    }
+    int getFees(){
+        return Fees;
+    }
 }
 int main(){
     MYSQL* conn;
@@ -32,5 +41,6 @@ int main(){
     }
     Sleep(3000)
 
+    Hotel h("Project Hostel", 10, 10000);
     return 0;
 }
