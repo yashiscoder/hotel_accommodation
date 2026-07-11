@@ -42,5 +42,22 @@ int main(){
     Sleep(3000)
 
     Hotel h("Project Hostel", 10, 10000);
+
+    int intB = h.getBed();
+    stringstream ss;
+    ss<<intB;
+    string strB = ss.str();
+
+    int intF = h.getFees();
+    stringstream as;
+    as<<intF;
+    string strf = as.str();
+    string insert = "INSERT INTO hostel (Name, Bed, Fees) VALUES ('"+h.getName()+"', '"+strB+"','"+strF"')";
+    if(mysql_query(conn, insert.c_str())){
+        cout<<"Error: "<<mysql_error(conn)<<endl;
+    }
+    else{
+        cout<<"Data Inserted"<<endl;
+    }
     return 0;
 }
