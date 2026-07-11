@@ -61,6 +61,7 @@ int main(){
     }
 
     bool exit = false;
+
     while(!exit){
         system("cls");
         cout<<"Welcome to Project Hostel Management"<<endl;
@@ -70,6 +71,13 @@ int main(){
         cout<<"Enter Your Choice: ";
         int val;
         cin>>val;
+
+        if(val==1){
+            string n;
+            cout<<"Enter Student name: ";
+            cin>>n;
+            
+        }
     }
     return 0;
 }
